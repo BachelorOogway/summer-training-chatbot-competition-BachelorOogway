@@ -255,7 +255,7 @@ def rag_answer(question: str) -> str:
     chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
     collection = chroma_client.get_collection(name=COLLECTION_NAME)
     
-    question = "What is the Innovation Academy?"
+    #question = "What is the Innovation Academy?"
     
     top_k = 5
 
@@ -344,7 +344,6 @@ def generate_rag_answers(questions: List[str]) -> List[str]:
         print(f"🤖 Answering: {question[:80]}{'...' if len(question) > 80 else ''}")
         answer = rag_answer(question)
         answers.append(answer)
-        print("The answer is here: ", answer)
     return zip(questions, answers)
 
 generate_rag_answers(["What are the current SIGs in InnoWings?"])
