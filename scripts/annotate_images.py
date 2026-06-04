@@ -7,7 +7,7 @@ Usage:
     python scripts/annotate_images.py [image_folder] [output_file]
 
 Defaults:
-    image_folder: image/
+    image_folder: images_test/
     output_file: image_annotations.json
 """
 import sys
@@ -60,6 +60,10 @@ def annotate_image(image_path: Path) -> str:
         image_data = encode_image(image_path)
         media_type = get_media_type(image_path)
         
+        example_annotation = """A group portrait of a Hong Kong RC aircraft modeling club outdoors on a sunny clear day. Around 25 hobbyists (mixed male and female adults, most wearing matching dark navy baseball caps) gather around a large custom-built twin-wing gasoline-powered radio-controlled aerobatic model plane as the central focus.
+The oversized RC biplane features a red fuselage, white nose cone, and wings painted in white with bold yellow, blue and red decorative stripes; partial "BOEING" lettering is printed on both upper wing surfaces. Multiple participants hold up the plane's wings with their hands, and nearly all people give a thumbs-up gesture to mark a successful test flight or club event.
+The group lines up in two rows: front row kneels on paved asphalt aircraft taxiway, back row stands on the pavement bordered by green lawn. In the background: dense high-rise residential apartment towers of Tin Shui Wai (New Territories, Hong Kong) rise on the left, with thick green woodland hillside stretching across the right under a cloudless bright blue sky. The scene captures a celebratory post-flight team photo for radio-controlled aviation enthusiasts."""
+        
         response = gpt_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -68,7 +72,12 @@ def annotate_image(image_path: Path) -> str:
                     "content": [
                         {
                             "type": "text",
-                            "text": "Please provide a detailed annotation/description of this image. Include: what is shown, key objects, colors, layout, and any text visible.",
+                            "text": f"""Please provide a detailed annotation/description of this image, similar in style and detail level to this example:
+
+EXAMPLE ANNOTATION:
+{example_annotation}
+
+For the image provided, include: what is shown, key objects, colors, layout, any text visible, people/groups, location context, and overall scene composition. Be thorough and descriptive.""",
                         },
                         {
                             "type": "image_url",
@@ -79,7 +88,7 @@ def annotate_image(image_path: Path) -> str:
                     ],
                 }
             ],
-            max_tokens=500,
+            max_tokens=800,
         )
         return response.choices[0].message.content
     except Exception as e:
@@ -87,7 +96,7 @@ def annotate_image(image_path: Path) -> str:
 
 
 def main():
-    image_folder = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("image")
+    image_folder = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("images_test")
     output_file = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("image_annotations.json")
 
     if not image_folder.exists():
