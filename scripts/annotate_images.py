@@ -60,24 +60,39 @@ def annotate_image(image_path: Path) -> str:
         image_data = encode_image(image_path)
         media_type = get_media_type(image_path)
         
-        example_annotation = """A group portrait of a Hong Kong RC aircraft modeling club outdoors on a sunny clear day. Around 25 hobbyists (mixed male and female adults, most wearing matching dark navy baseball caps) gather around a large custom-built twin-wing gasoline-powered radio-controlled aerobatic model plane as the central focus.
+        example_annotation1 = """A group portrait of a Hong Kong RC aircraft modeling club outdoors on a sunny clear day. Around 25 hobbyists (mixed male and female adults, most wearing matching dark navy baseball caps) gather around a large custom-built twin-wing gasoline-powered radio-controlled aerobatic model plane as the central focus.
 The oversized RC biplane features a red fuselage, white nose cone, and wings painted in white with bold yellow, blue and red decorative stripes; partial "BOEING" lettering is printed on both upper wing surfaces. Multiple participants hold up the plane's wings with their hands, and nearly all people give a thumbs-up gesture to mark a successful test flight or club event.
 The group lines up in two rows: front row kneels on paved asphalt aircraft taxiway, back row stands on the pavement bordered by green lawn. In the background: dense high-rise residential apartment towers of Tin Shui Wai (New Territories, Hong Kong) rise on the left, with thick green woodland hillside stretching across the right under a cloudless bright blue sky. The scene captures a celebratory post-flight team photo for radio-controlled aviation enthusiasts."""
+
+        example_annotation2 = """A close-up indoor shot capturing a fluffy golden British Shorthair (golden chinchilla cat) having its round cheeks gently squished between two human thumbs and fingers.
+The cat features rich warm orange-gold top fur transitioning to creamy off-white fur on its muzzle, chest and neck, large glossy round dark emerald-green eyes, a tiny pale pink nose, and fine white whiskers extending outward. Its plush, thick double coat appears extremely soft and voluminous.
+Two light-skinned human hands frame the cat's face from left and right sides, pressing its cheek fur outwards into a rounded, squishy shape. The background consists of muted grey woven textured carpet flooring and a plain pale white baseboard along the upper edge of the frame. A small faint white watermark reading "MAPLE.CAT" sits on the bottom-left carpet area. The cat has a calm, wide-eyed neutral facial expression under gentle cheek pinching."""
+
+        example_annotation3 = """A formal indoor event photograph taken at a ceremony dated December 2021, featuring two masked adult Asian professionals engaged in face-to-face conversation against a digital starry-blue backdrop screen with partial golden "December 2021" text visible at the top left.
+The male figure on the left wears a tailored dark navy formal suit, white collared dress shirt, patterned necktie, and a white disposable face mask covering his nose and mouth; a small boutonniere flower pin adorns his left lapel. He gestures expressively with both open palms forward while speaking toward the woman beside him.
+The female figure on the right sports textured off-white cream tweed blazer over a black turtleneck top, thin-rimmed eyeglasses, matching white protective face mask, a pinned name badge, and a decorative peach rose boutonniere tied with lavender ribbon on her blazer lapel. She stands attentively facing the man, listening intently.
+The background LED wall has a deep navy base dotted with scattered pale white speckles resembling starry night sky, establishing a formal corporate or institutional award/inauguration ceremony atmosphere."""
         
         response = gpt_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-mini",
             messages=[
                 {
                     "role": "user",
                     "content": [
                         {
                             "type": "text",
-                            "text": f"""Please provide a detailed annotation/description of this image, similar in style and detail level to this example:
+                            "text": f"""Please provide a detailed annotation/description of this image, similar in style and detail level to these examples:
 
-EXAMPLE ANNOTATION:
-{example_annotation}
+EXAMPLE 1 (Group/Event Scene):
+{example_annotation1}
 
-For the image provided, include: what is shown, key objects, colors, layout, any text visible, people/groups, location context, and overall scene composition. Be thorough and descriptive.""",
+EXAMPLE 2 (Close-up Subject):
+{example_annotation2}
+
+EXAMPLE 3 (Formal Event/Professional Interaction):
+{example_annotation3}
+
+For the image provided, include: what is shown, key objects, colors, layout, any text visible, people/groups/animals, location context, and overall scene composition. Be thorough and descriptive.""",
                         },
                         {
                             "type": "image_url",

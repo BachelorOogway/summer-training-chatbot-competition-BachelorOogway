@@ -61,7 +61,7 @@ def annotate_image(image_path: Path) -> str:
         media_type = get_media_type(image_path)
         
         response = gpt_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-mini",
             messages=[
                 {
                     "role": "user",
