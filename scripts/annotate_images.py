@@ -27,7 +27,7 @@ if not API_Key:
 
 # Initialize GPT client with vision capability
 gpt_client = AzureOpenAI(
-    azure_endpoint="https://api-iw.azure-api.net/sig-shared-jpeast/deployments/gpt-4o-mini/chat/completions?api-version=2025-01-01-preview",
+    azure_endpoint="https://api-iw.azure-api.net/sig-shared-jpeast/deployments/gpt-5-mini/chat/completions?api-version=2025-01-01-preview",
     api_key=API_Key,
     api_version="2025-01-01-preview",
 )
@@ -103,9 +103,12 @@ For the image provided, include: what is shown, key objects, colors, layout, any
                     ],
                 }
             ],
-            max_tokens=800,
+            #max_tokens=800,
         )
-        return response.choices[0].message.content
+        print(f"response: {response}")
+        print(f"response.usage.total_tokens: {response.usage.total_tokens if hasattr(response, 'usage') else 'N/A'}")
+        print(f"response.choices[0].message.content: {response.choices[0].message.content}")
+        return response.choices[0].message.content, response.usage.total_tokens if hasattr(response, 'usage') else None
     except Exception as e:
         return f"Error processing image: {str(e)}"
 
