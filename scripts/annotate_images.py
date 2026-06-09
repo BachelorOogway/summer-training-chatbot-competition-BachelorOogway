@@ -27,7 +27,7 @@ if not API_Key:
 
 # Initialize GPT client with vision capability
 gpt_client = AzureOpenAI(
-    azure_endpoint="https://api-iw.azure-api.net/sig-shared-jpeast/deployments/gpt-4o-mini/chat/completions?api-version=2025-01-01-preview",
+    azure_endpoint="https://api-iw.azure-api.net/sig-shared-jpeast/deployments/gpt-5-mini/chat/completions?api-version=2025-01-01-preview",
     api_key=API_Key,
     api_version="2025-01-01-preview",
 )
@@ -54,7 +54,7 @@ def get_media_type(image_path: Path) -> str:
     return type_map.get(ext, "image/jpeg")
 
 
-def annotate_image(image_path: Path) -> str:
+def annotate_image(image_path: Path) -> tuple[str, int]:
     """Send image to GPT-4o-mini and get annotation."""
     try:
         image_data = encode_image(image_path)
@@ -103,15 +103,18 @@ For the image provided, include: what is shown, key objects, colors, layout, any
                     ],
                 }
             ],
-            max_tokens=800,
+            #max_tokens=800,
         )
-        return response.choices[0].message.content
+        print(f"response: {response}")
+        print(f"response.usage.total_tokens: {response.usage.total_tokens if hasattr(response, 'usage') else 'N/A'}")
+        print(f"response.choices[0].message.content: {response.choices[0].message.content}")
+        return response.choices[0].message.content, response.usage.total_tokens if hasattr(response, 'usage') else None
     except Exception as e:
-        return f"Error processing image: {str(e)}"
+        raise Exception(f"Error processing image: {str(e)}")
 
 
 def main():
-    image_folder = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("images_test")
+    image_folder = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("images")
     output_file = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("image_annotations.json")
 
     if not image_folder.exists():
