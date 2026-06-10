@@ -30,7 +30,7 @@ from openai import AzureOpenAI
 BASE_DIR = Path(__file__).resolve().parent
 
 DEFAULT_DATASET = BASE_DIR / "data.json"
-DEFAULT_IMAGE_FILE = BASE_DIR / "image_annotations.json"
+DEFAULT_IMAGE_FILE = BASE_DIR / "image_annotations_makerspace.json"
 DEFAULT_CHROMA_PATH = BASE_DIR / "chroma_db" / "chroma_db"
 DEFAULT_COLLECTION = "Innowing_db"
 DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small"
@@ -195,19 +195,19 @@ def collect_chunks(config: IngestConfig) -> Tuple[List[ChunkRecord], Dict[str, i
     all_records: List[ChunkRecord] = []
     stats = {"web_pages": 0, "web_chunks": 0, "images": 0, "image_chunks": 0}
 
-    if config.include_text:
-        documents = load_json_file(config.dataset_path, "Dataset")
-        if not isinstance(documents, list):
-            raise ValueError(f"Dataset must be a JSON list: {config.dataset_path}")
+    # if config.include_text:
+    #     documents = load_json_file(config.dataset_path, "Dataset")
+    #     if not isinstance(documents, list):
+    #         raise ValueError(f"Dataset must be a JSON list: {config.dataset_path}")
 
-        web_records = chunk_web_documents(documents, splitter)
-        all_records.extend(web_records)
-        stats["web_pages"] = len(documents)
-        stats["web_chunks"] = len(web_records)
-        print(
-            f"Loaded {len(documents)} web pages -> {len(web_records)} chunks "
-            f"(size={config.chunk_size}, overlap={config.chunk_overlap})"
-        )
+    #     web_records = chunk_web_documents(documents, splitter)
+    #     all_records.extend(web_records)
+    #     stats["web_pages"] = len(documents)
+    #     stats["web_chunks"] = len(web_records)
+    #     print(
+    #         f"Loaded {len(documents)} web pages -> {len(web_records)} chunks "
+    #         f"(size={config.chunk_size}, overlap={config.chunk_overlap})"
+    #     )
 
     if config.include_images:
         annotations = load_json_file(config.image_file, "Image annotations")
@@ -428,7 +428,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> IngestConfig:
     include_images = not args.text_only
 
     return IngestConfig(
-        dataset_path=args.dataset.resolve(),
+        # dataset_path=args.dataset.resolve(),
         image_file=args.image_file.resolve(),
         chroma_path=args.chroma_path.resolve(),
         collection_name=args.collection,
